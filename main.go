@@ -23,7 +23,7 @@ func videoCreate(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	mux := http.NewServeMux()
-	mux.HandleFunc("GET /", home)
+	mux.HandleFunc("GET /{$}", home)
 	mux.HandleFunc("GET /video", videoView)
 	mux.HandleFunc("POST /video", videoCreate)
 	mux.HandleFunc("GET /video/{id}", videoDetail)
