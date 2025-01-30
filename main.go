@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func home(w http.ResponseWriter, r *http.Request) {
@@ -14,7 +16,13 @@ func videoView(w http.ResponseWriter, r *http.Request) {
 }
 
 func videoDetail(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Video Detail!"))
+	id, err := strconv.Atoi(r.URL.Path[len("/video/"):])
+	if err != nil || id < 1 {
+		http.NotFound(w, r)
+		return
+	}
+	msg := fmt.Sprintf("Display video detail with ID  of %d", id)
+	w.Write([]byte(msg))
 }
 
 func videoCreate(w http.ResponseWriter, r *http.Request) {
