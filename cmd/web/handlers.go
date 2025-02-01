@@ -14,12 +14,6 @@ type Talk struct {
 	Thumbnail string
 }
 
-type Speaker struct {
-	Name      string
-	TalkCount int
-	Avatar    string
-}
-
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	data := templateData{}
 
@@ -56,13 +50,10 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Simulate speakers data
-	speakers := []Speaker{
-		{Name: "Jane Smith", TalkCount: 23, Avatar: "https://placehold.co/200x200"},
-		{Name: "John Doe", TalkCount: 15, Avatar: "https://placehold.co/200x200"},
-		{Name: "Alice Johnson", TalkCount: 31, Avatar: "https://placehold.co/200x200"},
-		{Name: "Bob Wilson", TalkCount: 12, Avatar: "https://placehold.co/200x200"},
-		{Name: "Carol White", TalkCount: 8, Avatar: "https://placehold.co/200x200"},
-		{Name: "David Brown", TalkCount: 19, Avatar: "https://placehold.co/200x200"},
+	speakers, err := app.speakers.GetActive()
+	if err != nil {
+		app.serverError(w, r, err)
+		return
 	}
 
 	// Simulate events data

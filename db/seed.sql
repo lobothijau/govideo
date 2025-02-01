@@ -133,3 +133,179 @@ INSERT INTO events (name, location, date, banner, thumbnail, home_page, descript
     'https://goafrica.dev',
     'Africa''s premier Go conference, highlighting the growing Go community across the continent.'
 );
+
+CREATE TABLE speakers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    avatar VARCHAR(255),
+    home_page VARCHAR(255),
+    github VARCHAR(255),
+    twitter VARCHAR(255),
+    linkedin VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_speakers_created ON speakers(created_at);
+
+INSERT INTO speakers (name, avatar, home_page, github, twitter, linkedin) VALUES
+(
+    'Sarah Chen',
+    'https://placehold.co/200x200',
+    'https://sarahchen.dev',
+    'https://github.com/sarahchen',
+    'https://twitter.com/sarahchen',
+    'https://linkedin.com/in/sarahchen'
+),
+(
+    'James Wilson',
+    'https://placehold.co/200x200',
+    'https://jameswilson.tech',
+    'https://github.com/jwilson',
+    'https://twitter.com/jwilson',
+    'https://linkedin.com/in/jameswilson'
+),
+(
+    'Maria Rodriguez',
+    'https://placehold.co/200x200',
+    'https://maria-rodriguez.com',
+    'https://github.com/mrodriguez',
+    'https://twitter.com/mrodriguez',
+    'https://linkedin.com/in/mariarodriguez'
+),
+(
+    'Alex Kumar',
+    'https://placehold.co/200x200',
+    'https://alexkumar.dev',
+    'https://github.com/alexkumar',
+    'https://twitter.com/alexkumar',
+    'https://linkedin.com/in/alexkumar'
+),
+(
+    'Emily Zhang',
+    'https://placehold.co/200x200',
+    'https://emilyzhang.io',
+    'https://github.com/ezhang',
+    'https://twitter.com/ezhang',
+    'https://linkedin.com/in/emilyzhang'
+),
+(
+    'Michael Patel',
+    'https://placehold.co/200x200',
+    'https://mpatel.dev',
+    'https://github.com/mpatel',
+    'https://twitter.com/mpatel',
+    'https://linkedin.com/in/michaelpatel'
+),
+(
+    'Lisa Anderson',
+    'https://placehold.co/200x200',
+    'https://lisaanderson.tech',
+    'https://github.com/landerson',
+    'https://twitter.com/landerson',
+    'https://linkedin.com/in/lisaanderson'
+),
+(
+    'David Kim',
+    'https://placehold.co/200x200',
+    'https://davidkim.dev',
+    'https://github.com/dkim',
+    'https://twitter.com/dkim',
+    'https://linkedin.com/in/davidkim'
+),
+(
+    'Sophie Martin',
+    'https://placehold.co/200x200',
+    'https://sophiemartin.dev',
+    'https://github.com/smartin',
+    'https://twitter.com/smartin',
+    'https://linkedin.com/in/sophiemartin'
+),
+(
+    'Carlos Santos',
+    'https://placehold.co/200x200',
+    'https://carlossantos.dev',
+    'https://github.com/csantos',
+    'https://twitter.com/csantos',
+    'https://linkedin.com/in/carlossantos'
+),
+(
+    'Anna Kowalski',
+    'https://placehold.co/200x200',
+    'https://annakowalski.dev',
+    'https://github.com/akowalski',
+    'https://twitter.com/akowalski',
+    'https://linkedin.com/in/annakowalski'
+),
+(
+    'Thomas Schmidt',
+    'https://placehold.co/200x200',
+    'https://tschmidt.io',
+    'https://github.com/tschmidt',
+    'https://twitter.com/tschmidt',
+    'https://linkedin.com/in/thomasschmidt'
+),
+(
+    'Nina Patel',
+    'https://placehold.co/200x200',
+    'https://ninapatel.dev',
+    'https://github.com/npatel',
+    'https://twitter.com/npatel',
+    'https://linkedin.com/in/ninapatel'
+),
+(
+    'Robert Chang',
+    'https://placehold.co/200x200',
+    'https://robertchang.tech',
+    'https://github.com/rchang',
+    'https://twitter.com/rchang',
+    'https://linkedin.com/in/robertchang'
+),
+(
+    'Emma Brown',
+    'https://placehold.co/200x200',
+    'https://emmabrown.dev',
+    'https://github.com/ebrown',
+    'https://twitter.com/ebrown',
+    'https://linkedin.com/in/emmabrown'
+),
+(
+    'Lucas Silva',
+    'https://placehold.co/200x200',
+    'https://lucassilva.dev',
+    'https://github.com/lsilva',
+    'https://twitter.com/lsilva',
+    'https://linkedin.com/in/lucassilva'
+),
+(
+    'Julia Lee',
+    'https://placehold.co/200x200',
+    'https://julialee.tech',
+    'https://github.com/jlee',
+    'https://twitter.com/jlee',
+    'https://linkedin.com/in/julialee'
+),
+(
+    'Marco Rossi',
+    'https://placehold.co/200x200',
+    'https://marcorossi.dev',
+    'https://github.com/mrossi',
+    'https://twitter.com/mrossi',
+    'https://linkedin.com/in/marcorossi'
+),
+(
+    'Hannah Kim',
+    'https://placehold.co/200x200',
+    'https://hannahkim.dev',
+    'https://github.com/hkim',
+    'https://twitter.com/hkim',
+    'https://linkedin.com/in/hannahkim'
+),
+(
+    'Daniel Garcia',
+    'https://placehold.co/200x200',
+    'https://danielgarcia.tech',
+    'https://github.com/dgarcia',
+    'https://twitter.com/dgarcia',
+    'https://linkedin.com/in/danielgarcia'
+);

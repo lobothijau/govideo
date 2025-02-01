@@ -14,8 +14,9 @@ import (
 )
 
 type application struct {
-	logger *slog.Logger
-	events *models.EventModel
+	logger   *slog.Logger
+	events   *models.EventModel
+	speakers *models.SpeakerModel
 }
 
 func main() {
@@ -35,8 +36,9 @@ func main() {
 	defer db.Close()
 
 	app := &application{
-		logger: logger,
-		events: &models.EventModel{DB: db},
+		logger:   logger,
+		events:   &models.EventModel{DB: db},
+		speakers: &models.SpeakerModel{DB: db},
 	}
 	logger.Info("Starting server", "url", fmt.Sprintf("http://localhost:%s", *addr))
 

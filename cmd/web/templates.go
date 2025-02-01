@@ -9,7 +9,7 @@ import (
 
 type templateData struct {
 	Talks    []Talk
-	Speakers []Speaker
+	Speakers []models.Speaker
 	Events   []models.Event
 }
 
