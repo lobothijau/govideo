@@ -20,14 +20,6 @@ type Speaker struct {
 	Avatar    string
 }
 
-type Event struct {
-	Name      string
-	Location  string
-	DateRange string
-	TalkCount int
-	Banner    string
-}
-
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	data := templateData{}
 
@@ -74,28 +66,10 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Simulate events data
-	events := []Event{
-		{
-			Name:      "GopherCon 2025",
-			Location:  "San Francisco, USA",
-			DateRange: "July 15-17, 2025",
-			TalkCount: 45,
-			Banner:    "https://placehold.co/800x400",
-		},
-		{
-			Name:      "GoWest Summit",
-			Location:  "Vancouver, Canada",
-			DateRange: "August 10-12, 2025",
-			TalkCount: 30,
-			Banner:    "https://placehold.co/800x400",
-		},
-		{
-			Name:      "GoEurope Conference",
-			Location:  "Berlin, Germany",
-			DateRange: "September 5-7, 2025",
-			TalkCount: 25,
-			Banner:    "https://placehold.co/800x400",
-		},
+	events, err := app.events.GetLatest()
+	if err != nil {
+		app.serverError(w, r, err)
+		return
 	}
 
 	data.Talks = talks

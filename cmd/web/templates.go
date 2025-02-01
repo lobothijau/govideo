@@ -3,12 +3,14 @@ package main
 import (
 	"html/template"
 	"net/http"
+
+	"govideo.dev/internal/models"
 )
 
 type templateData struct {
 	Talks    []Talk
 	Speakers []Speaker
-	Events   []Event
+	Events   []models.Event
 }
 
 func (app *application) render(w http.ResponseWriter, r *http.Request, page string, data templateData) {
