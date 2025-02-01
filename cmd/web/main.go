@@ -1,11 +1,16 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"log"
 	"net/http"
 )
 
 func main() {
+	addr := flag.String("addr", "4000", "HTTP network address")
+	flag.Parse()
+
 	mux := http.NewServeMux()
 
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
@@ -17,9 +22,10 @@ func main() {
 	mux.HandleFunc("POST /video", videoCreate)
 	mux.HandleFunc("GET /video/{id}", videoDetail)
 
-	log.Println("Starting server on http://localhost:4000")
+	log.Printf("Starting server on http://localhost:%s", *addr)
 
-	err := http.ListenAndServe(":4000", mux)
+	port := fmt.Sprintf(":%s", *addr)
+	err := http.ListenAndServe(port, mux)
 	if err != nil {
 		log.Fatal(err)
 	}
