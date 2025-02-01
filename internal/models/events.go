@@ -9,13 +9,15 @@ type Event struct {
 	ID          int
 	Name        string
 	Location    string
-	Date        string
+	DateStart   string
+	DateEnd     string
 	Banner      string
 	Thumbnail   string
 	HomePage    string
 	Description string
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
+	TalkCount   int
 }
 
 type EventModel struct {
@@ -44,7 +46,19 @@ func (m *EventModel) Delete(id int) error {
 }
 
 func (m *EventModel) GetLatest() ([]Event, error) {
-	query := `SELECT id, name, location, date, banner, thumbnail, home_page, description, created_at, updated_at FROM events ORDER BY created_at DESC LIMIT 4`
+	query := `
+		SELECT 
+			e.id, e.name, e.location, e.date_start, e.date_end, 
+			e.banner, e.thumbnail, e.home_page, e.description, 
+			e.created_at, e.updated_at,
+			COUNT(t.id) as talk_count
+		FROM events e
+		LEFT JOIN talks t ON e.id = t.event_id
+		GROUP BY e.id, e.name, e.location, e.date_start, e.date_end,
+				 e.banner, e.thumbnail, e.home_page, e.description,
+				 e.created_at, e.updated_at
+		ORDER BY e.created_at DESC 
+		LIMIT 4`
 
 	rows, err := m.DB.Query(query)
 	if err != nil {
@@ -56,7 +70,12 @@ func (m *EventModel) GetLatest() ([]Event, error) {
 
 	for rows.Next() {
 		var event Event
-		err := rows.Scan(&event.ID, &event.Name, &event.Location, &event.Date, &event.Banner, &event.Thumbnail, &event.HomePage, &event.Description, &event.CreatedAt, &event.UpdatedAt)
+		err := rows.Scan(
+			&event.ID, &event.Name, &event.Location,
+			&event.DateStart, &event.DateEnd, &event.Banner,
+			&event.Thumbnail, &event.HomePage, &event.Description,
+			&event.CreatedAt, &event.UpdatedAt, &event.TalkCount,
+		)
 		if err != nil {
 			return nil, err
 		}

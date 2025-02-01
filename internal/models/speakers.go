@@ -2,7 +2,6 @@ package models
 
 import (
 	"database/sql"
-	"fmt"
 	"time"
 )
 
@@ -16,6 +15,7 @@ type Speaker struct {
 	Linkedin  string
 	CreatedAt time.Time
 	UpdatedAt time.Time
+	TalkCount int
 }
 
 type SpeakerModel struct {
@@ -44,7 +44,14 @@ func (m *SpeakerModel) Delete(id int) error {
 
 func (m *SpeakerModel) GetActive() ([]Speaker, error) {
 	query := `
-		SELECT * FROM speakers limit 6
+		SELECT 
+			s.id, s.name, s.avatar, s.home_page, s.github, s.twitter, s.linkedin, s.created_at, s.updated_at,
+			COUNT(t.id) as talk_count
+		FROM speakers s
+		LEFT JOIN talks t ON s.id = t.speaker_id
+		GROUP BY s.id, s.name, s.avatar, s.home_page, s.github, s.twitter, s.linkedin, s.created_at, s.updated_at
+		ORDER BY s.created_at DESC
+		LIMIT 6
 	`
 
 	rows, err := m.DB.Query(query)
@@ -57,18 +64,14 @@ func (m *SpeakerModel) GetActive() ([]Speaker, error) {
 
 	for rows.Next() {
 		var speaker Speaker
-		err := rows.Scan(&speaker.ID, &speaker.Name, &speaker.Avatar, &speaker.HomePage, &speaker.Github, &speaker.Twitter, &speaker.Linkedin, &speaker.CreatedAt, &speaker.UpdatedAt)
+		err := rows.Scan(
+			&speaker.ID, &speaker.Name, &speaker.Avatar, &speaker.HomePage, &speaker.Github, &speaker.Twitter, &speaker.Linkedin, &speaker.CreatedAt, &speaker.UpdatedAt, &speaker.TalkCount,
+		)
 		if err != nil {
 			return nil, err
 		}
 		speakers = append(speakers, speaker)
 	}
-
-	for _, speaker := range speakers {
-		fmt.Println(speaker)
-	}
-
-	return speakers, nil
 
 	if err = rows.Err(); err != nil {
 		return nil, err

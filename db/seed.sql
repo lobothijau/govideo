@@ -1,10 +1,11 @@
 CREATE DATABASE govideo CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
+USE govideo;
 CREATE TABLE events (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     location VARCHAR(255) NOT NULL,
-    date VARCHAR(100) NOT NULL,
+    date_start DATETIME NOT NULL,
+    date_end DATETIME NOT NULL,
     banner VARCHAR(255),
     thumbnail VARCHAR(255),
     home_page VARCHAR(255),
@@ -15,11 +16,12 @@ CREATE TABLE events (
 
 CREATE INDEX idx_events_created ON events(created_at);
 
-INSERT INTO events (name, location, date, banner, thumbnail, home_page, description) VALUES
+INSERT INTO events (name, location, date_start, date_end, banner, thumbnail, home_page, description) VALUES
 (
     'GopherCon 2025',
     'San Francisco, USA',
-    'July 15-17, 2025',
+    '2025-07-15',
+    '2025-07-17',
     'https://placehold.co/800x400',
     'https://placehold.co/400x300',
     'https://gophercon.com',
@@ -28,7 +30,8 @@ INSERT INTO events (name, location, date, banner, thumbnail, home_page, descript
 (
     'GoWest Summit',
     'Vancouver, Canada',
-    'August 10-12, 2025',
+    '2025-08-10',
+    '2025-08-12',
     'https://placehold.co/800x400',
     'https://placehold.co/400x300',
     'https://gowest.dev',
@@ -37,7 +40,8 @@ INSERT INTO events (name, location, date, banner, thumbnail, home_page, descript
 (
     'GoEurope Conference',
     'Berlin, Germany',
-    'September 5-7, 2025',
+    '2025-09-05',
+    '2025-09-07',
     'https://placehold.co/800x400',
     'https://placehold.co/400x300',
     'https://goeurope.dev',
@@ -46,7 +50,8 @@ INSERT INTO events (name, location, date, banner, thumbnail, home_page, descript
 (
     'GoCon Japan',
     'Tokyo, Japan', 
-    'October 12-14, 2025',
+    '2025-10-12',
+    '2025-10-14',
     'https://placehold.co/800x400',
     'https://placehold.co/400x300',
     'https://gocon.jp',
@@ -55,7 +60,8 @@ INSERT INTO events (name, location, date, banner, thumbnail, home_page, descript
 (
     'GoLatin',
     'São Paulo, Brazil',
-    'November 8-10, 2025', 
+    '2025-11-08',
+    '2025-11-10',
     'https://placehold.co/800x400',
     'https://placehold.co/400x300',
     'https://golatin.dev',
@@ -64,7 +70,8 @@ INSERT INTO events (name, location, date, banner, thumbnail, home_page, descript
 (
     'GopherCon UK',
     'London, UK',
-    'August 21-23, 2025',
+    '2025-08-21',
+    '2025-08-23',
     'https://placehold.co/800x400',
     'https://placehold.co/400x300',
     'https://gophercon.co.uk', 
@@ -73,7 +80,8 @@ INSERT INTO events (name, location, date, banner, thumbnail, home_page, descript
 (
     'GopherCon Singapore',
     'Singapore',
-    'December 5-7, 2025',
+    '2025-12-05',
+    '2025-12-07',
     'https://placehold.co/800x400',
     'https://placehold.co/400x300',
     'https://gophercon.sg',
@@ -82,7 +90,8 @@ INSERT INTO events (name, location, date, banner, thumbnail, home_page, descript
 (
     'GoAustralia',
     'Sydney, Australia',
-    'March 15-17, 2026',
+    '2026-03-15',
+    '2026-03-17',
     'https://placehold.co/800x400',
     'https://placehold.co/400x300',
     'https://goaustralia.dev',
@@ -91,7 +100,8 @@ INSERT INTO events (name, location, date, banner, thumbnail, home_page, descript
 (
     'GopherCon India',
     'Bangalore, India',
-    'February 22-24, 2026',
+    '2026-02-22',
+    '2026-02-24',
     'https://placehold.co/800x400',
     'https://placehold.co/400x300',
     'https://gopherconindia.com',
@@ -100,7 +110,8 @@ INSERT INTO events (name, location, date, banner, thumbnail, home_page, descript
 (
     'GoNordic',
     'Stockholm, Sweden',
-    'May 18-20, 2026',
+    '2026-05-18',
+    '2026-05-20',
     'https://placehold.co/800x400',
     'https://placehold.co/400x300',
     'https://gonordic.dev',
@@ -109,7 +120,8 @@ INSERT INTO events (name, location, date, banner, thumbnail, home_page, descript
 (
     'GoCon Russia',
     'Moscow, Russia',
-    'April 8-10, 2026',
+    '2026-04-08',
+    '2026-04-10',
     'https://placehold.co/800x400',
     'https://placehold.co/400x300',
     'https://gocon.ru',
@@ -118,7 +130,8 @@ INSERT INTO events (name, location, date, banner, thumbnail, home_page, descript
 (
     'GoMENA',
     'Dubai, UAE',
-    'January 15-17, 2026',
+    '2026-01-15',
+    '2026-01-17',
     'https://placehold.co/800x400',
     'https://placehold.co/400x300',
     'https://gomena.dev',
@@ -127,7 +140,8 @@ INSERT INTO events (name, location, date, banner, thumbnail, home_page, descript
 (
     'GoAfrica',
     'Cape Town, South Africa',
-    'June 20-22, 2026',
+    '2026-06-20',
+    '2026-06-22',
     'https://placehold.co/800x400',
     'https://placehold.co/400x300',
     'https://goafrica.dev',
@@ -309,3 +323,52 @@ INSERT INTO speakers (name, avatar, home_page, github, twitter, linkedin) VALUES
     'https://twitter.com/dgarcia',
     'https://linkedin.com/in/danielgarcia'
 );
+
+CREATE TABLE talks (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    duration VARCHAR(50) NOT NULL,
+    speaker_id INT NOT NULL,
+    event_id INT NOT NULL,
+    thumbnail VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (speaker_id) REFERENCES speakers(id),
+    FOREIGN KEY (event_id) REFERENCES events(id)
+);
+
+CREATE INDEX idx_talks_created ON talks(created_at);
+CREATE INDEX idx_talks_speaker ON talks(speaker_id);
+CREATE INDEX idx_talks_event ON talks(event_id);
+
+INSERT INTO talks (title, duration, speaker_id, event_id, thumbnail) VALUES
+('Building Scalable Microservices with Go', '45 minutes', 1, 1, 'https://placehold.co/400x300'),
+('Advanced Concurrency Patterns', '30 minutes', 2, 1, 'https://placehold.co/400x300'),
+('Go for System Programming', '45 minutes', 3, 2, 'https://placehold.co/400x300'),
+('Testing Strategies in Go', '30 minutes', 4, 2, 'https://placehold.co/400x300'),
+('Building High-Performance APIs', '45 minutes', 5, 3, 'https://placehold.co/400x300'),
+('Go in the Cloud', '30 minutes', 6, 3, 'https://placehold.co/400x300'),
+('Memory Management in Go', '45 minutes', 7, 4, 'https://placehold.co/400x300'),
+('Effective Error Handling', '30 minutes', 8, 4, 'https://placehold.co/400x300'),
+('Go for AI and Machine Learning', '45 minutes', 9, 5, 'https://placehold.co/400x300'),
+('WebAssembly and Go', '30 minutes', 10, 5, 'https://placehold.co/400x300'),
+('Optimizing Go Applications', '45 minutes', 11, 6, 'https://placehold.co/400x300'),
+('Go Modules Deep Dive', '30 minutes', 12, 6, 'https://placehold.co/400x300'),
+('Building CLI Tools in Go', '45 minutes', 13, 7, 'https://placehold.co/400x300'),
+('Go for Game Development', '30 minutes', 14, 7, 'https://placehold.co/400x300'),
+('Secure Coding in Go', '45 minutes', 15, 8, 'https://placehold.co/400x300'),
+('Database Design with Go', '30 minutes', 16, 8, 'https://placehold.co/400x300'),
+('Go for IoT Applications', '45 minutes', 17, 9, 'https://placehold.co/400x300'),
+('RESTful API Best Practices', '30 minutes', 18, 9, 'https://placehold.co/400x300'),
+('gRPC in Production', '45 minutes', 19, 10, 'https://placehold.co/400x300'),
+('Go Generics in Practice', '30 minutes', 20, 10, 'https://placehold.co/400x300'),
+('Debugging Go Applications', '45 minutes', 1, 11, 'https://placehold.co/400x300'),
+('Go for Blockchain', '30 minutes', 2, 11, 'https://placehold.co/400x300'),
+('Performance Profiling in Go', '45 minutes', 3, 12, 'https://placehold.co/400x300'),
+('Microservices Architecture', '30 minutes', 4, 12, 'https://placehold.co/400x300'),
+('Go and Kubernetes', '45 minutes', 5, 13, 'https://placehold.co/400x300'),
+('Testing Microservices', '30 minutes', 6, 13, 'https://placehold.co/400x300'),
+('Go for Data Processing', '45 minutes', 7, 1, 'https://placehold.co/400x300'),
+('Building Real-time Systems', '30 minutes', 8, 2, 'https://placehold.co/400x300'),
+('Go and GraphQL', '45 minutes', 9, 3, 'https://placehold.co/400x300'),
+('Dependency Injection in Go', '30 minutes', 10, 4, 'https://placehold.co/400x300');

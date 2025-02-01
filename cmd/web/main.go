@@ -17,6 +17,7 @@ type application struct {
 	logger   *slog.Logger
 	events   *models.EventModel
 	speakers *models.SpeakerModel
+	talks    *models.TalkModel
 }
 
 func main() {
@@ -39,7 +40,15 @@ func main() {
 		logger:   logger,
 		events:   &models.EventModel{DB: db},
 		speakers: &models.SpeakerModel{DB: db},
+		talks:    &models.TalkModel{DB: db},
 	}
+
+	// Initialize templates
+	if err := app.initTemplates(); err != nil {
+		logger.Error(err.Error())
+		os.Exit(1)
+	}
+
 	logger.Info("Starting server", "url", fmt.Sprintf("http://localhost:%s", *addr))
 
 	port := fmt.Sprintf(":%s", *addr)

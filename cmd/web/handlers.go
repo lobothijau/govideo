@@ -6,47 +6,14 @@ import (
 	"strconv"
 )
 
-type Talk struct {
-	Title     string
-	Duration  string
-	Speaker   string
-	Event     string
-	Thumbnail string
-}
-
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	data := templateData{}
 
 	// Simulate talks data
-	talks := []Talk{
-		{
-			Title:     "Building Fast Web Applications with Go",
-			Duration:  "45m",
-			Speaker:   "Jane Smith",
-			Event:     "GopherCon 2025",
-			Thumbnail: "https://placehold.co/600x400",
-		},
-		{
-			Title:     "Advanced Database Patterns",
-			Duration:  "30m",
-			Speaker:   "John Doe",
-			Event:     "GoWest 2025",
-			Thumbnail: "https://placehold.co/600x400",
-		},
-		{
-			Title:     "Microservices in Practice",
-			Duration:  "60m",
-			Speaker:   "Alice Johnson",
-			Event:     "GoEurope 2025",
-			Thumbnail: "https://placehold.co/600x400",
-		},
-		{
-			Title:     "Security Best Practices",
-			Duration:  "45m",
-			Speaker:   "Bob Wilson",
-			Event:     "SecureGo 2025",
-			Thumbnail: "https://placehold.co/600x400",
-		},
+	talks, err := app.talks.GetLatest()
+	if err != nil {
+		app.serverError(w, r, err)
+		return
 	}
 
 	// Simulate speakers data
