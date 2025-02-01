@@ -1,6 +1,109 @@
-{{define "title"}}Home{{end}}
+{{define "title"}}Home{{end}} {{ define "main" }}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+  <h2 class="flex justify-between items-center text-2xl font-bold mb-6">
+    Latest talks
+    <a href="/talks" class="text-sm text-blue-600 hover:text-blue-800"
+      >see all talks</a
+    >
+  </h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+    {{range .Talks}}
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+      <div class="relative">
+        <img
+          src="{{.Thumbnail}}"
+          alt="{{.Title}} thumbnail"
+          class="w-full h-48 object-cover"
+        />
+        <span
+          class="absolute top-2 right-2 bg-black bg-opacity-75 text-white px-2 py-1 rounded text-sm"
+          >{{.Duration}}m</span
+        >
+      </div>
+      <div class="p-4">
+        <h3 class="font-semibold text-lg mb-2">{{.Title}}</h3>
+        <div class="space-y-2 text-sm text-gray-600">
+          <div class="flex items-center gap-2">
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              ></path>
+            </svg>
+            <span>{{.Speaker}}</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              ></path>
+            </svg>
+            <span>{{.Event}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{end}}
+  </div>
 
-{{ define "main" }}
-<h1>Home</h1>
+  <h2 class="flex justify-between items-center text-2xl font-bold mb-6">
+    Active speakers
+    <a href="/speakers" class="text-sm text-blue-600 hover:text-blue-800"
+      >see all speakers</a
+    >
+  </h2>
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-12">
+    {{range .Speakers}}
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+      <img
+        src="{{.Avatar}}"
+        alt="{{.Name}}'s avatar"
+        class="w-full h-40 object-cover"
+      />
+      <div class="p-4">
+        <h3 class="font-semibold text-lg">{{.Name}}</h3>
+        <span class="text-sm text-gray-600">{{.TalkCount}} talks</span>
+      </div>
+    </div>
+    {{end}}
+  </div>
+
+  <h2 class="flex justify-between items-center text-2xl font-bold mb-6">
+    Latest events
+    <a href="/events" class="text-sm text-blue-600 hover:text-blue-800"
+      >see all events</a
+    >
+  </h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {{range .Events}}
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+      <img
+        src="{{.Banner}}"
+        alt="{{.Name}} banner"
+        class="w-full h-48 object-cover"
+      />
+      <div class="p-4">
+        <h3 class="font-semibold text-lg mb-2">{{.Name}}</h3>
+        <p class="text-gray-600 mb-2">{{.Location}} • {{.DateRange}}</p>
+        <span class="text-sm text-gray-500">{{.TalkCount}} talks</span>
+      </div>
+    </div>
+    {{end}}
+  </div>
+</div>
 {{ end }}
-
