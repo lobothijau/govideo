@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-func home(w http.ResponseWriter, r *http.Request) {
+func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	w.Header().Add("Server", "Go")
 
@@ -19,21 +19,23 @@ func home(w http.ResponseWriter, r *http.Request) {
 
 	ts, err := template.ParseFiles(files...)
 	if err != nil {
+		app.logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI())
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 
 	err = ts.ExecuteTemplate(w, "base", nil)
 	if err != nil {
+		app.logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI())
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 	}
 }
 
-func videoView(w http.ResponseWriter, r *http.Request) {
+func (app *application) videoView(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Video View!"))
 }
 
-func videoDetail(w http.ResponseWriter, r *http.Request) {
+func (app *application) videoDetail(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Path[len("/video/"):])
 	if err != nil || id < 1 {
 		http.NotFound(w, r)
@@ -43,6 +45,6 @@ func videoDetail(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(msg))
 }
 
-func videoCreate(w http.ResponseWriter, r *http.Request) {
+func (app *application) videoCreate(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Video Create!"))
 }
