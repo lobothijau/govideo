@@ -102,7 +102,7 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	data.Speakers = speakers
 	data.Events = events
 
-	app.render(w, r, http.StatusOK, "home.html", data)
+	app.render(w, r, "home.html", data)
 }
 
 func (app *application) videoView(w http.ResponseWriter, r *http.Request) {

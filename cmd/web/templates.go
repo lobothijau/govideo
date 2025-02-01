@@ -11,20 +11,16 @@ type templateData struct {
 	Events   []Event
 }
 
-func (app *application) render(w http.ResponseWriter, r *http.Request, status int, page string, data templateData) {
-	// Create template set
+func (app *application) render(w http.ResponseWriter, r *http.Request, page string, data templateData) {
 	ts, err := template.ParseFiles("./ui/html/pages/"+page, "./ui/html/pages/base.html", "./ui/html/partials/nav.html")
 	if err != nil {
-		app.logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI())
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		app.serverError(w, r, err)
 		return
 	}
 
-	// Execute the template
 	err = ts.ExecuteTemplate(w, "base", data)
 	if err != nil {
-		app.logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI())
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		app.serverError(w, r, err)
 		return
 	}
 }
