@@ -15,5 +15,8 @@ func (app *application) routes() *http.ServeMux {
 	mux.HandleFunc("POST /video", app.videoCreate)
 	mux.HandleFunc("GET /video/{id}", app.videoDetail)
 
+	mux.HandleFunc("GET /speaker/create", app.speakerCreate)
+	mux.HandleFunc("POST /speaker/create", app.speakerCreatePost)
+
 	return mux
 }

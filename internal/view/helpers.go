@@ -44,3 +44,10 @@ func FormatDateRange(startDate, endDate string) (string, error) {
 		end.Day(),
 		end.Year()), nil
 }
+
+func AvatarURL(avatar string) string {
+	if len(avatar) >= 4 && avatar[:4] == "http" {
+		return avatar
+	}
+	return "/static/images/speakers/" + avatar
+}

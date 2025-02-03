@@ -30,8 +30,23 @@ func (m *SpeakerModel) Get(id int) (*Speaker, error) {
 	return nil, nil
 }
 
-func (m *SpeakerModel) Insert(speaker *Speaker) error {
-	return nil
+func (m *SpeakerModel) Insert(speaker *Speaker) (int, error) {
+	query := `
+		INSERT INTO speakers (name, avatar, home_page, github, twitter, linkedin, created_at, updated_at)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+	`
+
+	result, err := m.DB.Exec(query, speaker.Name, speaker.Avatar, speaker.HomePage, speaker.Github, speaker.Twitter, speaker.Linkedin, time.Now(), time.Now())
+	if err != nil {
+		return 0, err
+	}
+
+	id, err := result.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+
+	return int(id), nil
 }
 
 func (m *SpeakerModel) Update(speaker *Speaker) error {

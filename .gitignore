@@ -60,4 +60,4 @@ tmp/
 __debug_bin 
 
 # Upload folders
-static/images/speakers/
+ui/static/images/speakers/
