@@ -38,18 +38,22 @@
     {{range .Talks}}
     <div class="bg-white rounded-lg shadow-md overflow-hidden">
       <div class="relative">
-        <img
-          src="{{talkThumbnailURL .Thumbnail}}"
-          alt="{{.Title}} thumbnail"
-          class="w-full h-48 object-cover"
-        />
+        <a href="/talks/{{.ID}}">
+          <img
+            src="{{talkThumbnailURL .Thumbnail}}"
+            alt="{{.Title}} thumbnail"
+            class="w-full h-48 object-cover"
+          />
+        </a>
         <span
           class="absolute top-3 right-3 bg-white text-gray-900 px-3 py-1 rounded-full text-sm font-medium shadow-md"
           >{{.Duration}}</span
         >
       </div>
       <div class="p-4">
-        <h3 class="font-semibold text-lg mb-2">{{.Title}}</h3>
+        <a href="/talks/{{.ID}}" class="hover:text-cyan-800">
+          <h3 class="font-semibold text-lg mb-2">{{.Title}}</h3>
+        </a>
         <div class="space-y-2 text-sm text-gray-600">
           <div class="flex items-center gap-2">
             <svg

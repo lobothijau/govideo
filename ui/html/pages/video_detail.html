@@ -1,0 +1,56 @@
+{{define "title"}}{{.Talk.Title}}{{end}}
+{{define "main"}}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Main Content -->
+    <div class="lg:col-span-2">
+      <!-- Video Player -->
+      <div class="aspect-video w-full bg-black rounded-lg overflow-hidden">
+        <iframe
+          class="w-full h-full"
+          src="https://www.youtube.com/embed/{{.Talk.VideoID}}"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+
+      <!-- Talk Details -->
+      <div class="mt-6">
+        <h1 class="text-2xl font-bold">{{.Talk.Title}}</h1>
+        <div class="mt-4 flex items-center gap-4">
+          <img src="{{avatarURL .Talk.Speaker.Avatar}}" alt="" class="w-12 h-12 rounded-full">
+          <div>
+            <p class="font-medium">{{.Talk.Speaker.Name}}</p>
+            <p class="text-gray-600">{{.Talk.Event.Name}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="lg:col-span-1">
+      <h2 class="text-xl font-semibold mb-4">More from {{.Talk.Event.Name}}</h2>
+      <div class="space-y-4">
+        {{range .RelatedTalks}}
+        <a href="/video/{{.ID}}" class="flex gap-4 hover:bg-gray-50 p-2 rounded-lg transition">
+          <div class="w-32 aspect-video relative">
+            <img
+              src="{{talkThumbnailURL .Thumbnail}}"
+              alt="{{.Title}}"
+              class="rounded object-cover"
+            />
+            <span class="absolute bottom-1 right-1 bg-black bg-opacity-75 text-white text-xs px-1 rounded">
+              {{.Duration}}
+            </span>
+          </div>
+          <div>
+            <h3 class="font-medium">{{.Title}}</h3>
+            <p class="text-sm text-gray-600">{{.Speaker.Name}}</p>
+          </div>
+        </a>
+        {{end}}
+      </div>
+    </div>
+  </div>
+</div>
+{{end}} 

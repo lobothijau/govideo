@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -47,14 +48,37 @@ func (app *application) videoView(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Video View!"))
 }
 
-func (app *application) videoDetail(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(r.URL.Path[len("/video/"):])
+func (app *application) talkDetail(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.URL.Path[len("/talks/"):])
 	if err != nil || id < 1 {
-		http.NotFound(w, r)
+		app.clientError(w, http.StatusNotFound)
 		return
 	}
-	msg := fmt.Sprintf("Display video detail with ID  of %d", id)
-	w.Write([]byte(msg))
+
+	// Get the talk details
+	talk, err := app.talks.Get(id)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.clientError(w, http.StatusNotFound)
+		} else {
+			app.serverError(w, r, err)
+		}
+		return
+	}
+
+	// Get related talks from the same event
+	relatedTalks, err := app.talks.GetRelatedTalks(talk.EventID, talk.ID)
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	data := templateData{
+		Talk:         talk,
+		RelatedTalks: relatedTalks,
+	}
+
+	app.render(w, r, "video_detail.html", data)
 }
 
 func (app *application) videoCreate(w http.ResponseWriter, r *http.Request) {

@@ -7,16 +7,18 @@ import (
 )
 
 type Talk struct {
-	ID        int
-	Title     string
-	Duration  string
-	SpeakerID int
-	Speaker   Speaker
-	EventID   int
-	Event     Event
-	Thumbnail string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID            int
+	Title         string
+	Duration      string
+	VideoID       string
+	VideoProvider string
+	SpeakerID     int
+	Speaker       Speaker
+	EventID       int
+	Event         Event
+	Thumbnail     string
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
 }
 
 type TalkModel struct {
@@ -26,9 +28,9 @@ type TalkModel struct {
 func (m *TalkModel) Insert(talk *Talk) (int, error) {
 	query := `
 		INSERT INTO talks (
-			title, duration, speaker_id, event_id, thumbnail
+			title, duration, speaker_id, event_id, thumbnail, video_id, video_provider
 		)
-		VALUES (?, ?, ?, ?, ?)
+		VALUES (?, ?, ?, ?, ?, ?, ?)
 	`
 
 	result, err := m.DB.Exec(query,
@@ -37,6 +39,8 @@ func (m *TalkModel) Insert(talk *Talk) (int, error) {
 		talk.SpeakerID,
 		talk.EventID,
 		talk.Thumbnail,
+		talk.VideoID,
+		talk.VideoProvider,
 	)
 	if err != nil {
 		return 0, err
@@ -54,7 +58,8 @@ func (m *TalkModel) GetLatest() ([]Talk, error) {
 		SELECT 
 			t.id, t.title, t.duration, t.speaker_id, t.event_id, t.thumbnail, t.created_at, t.updated_at,
 			s.id, s.name, s.created_at, s.updated_at,
-			e.id, e.name, e.date_start, e.date_end, e.created_at, e.updated_at
+			e.id, e.name, e.date_start, e.date_end, e.created_at, e.updated_at,
+			t.video_id, t.video_provider
 		FROM talks t
 		LEFT JOIN speakers s ON t.speaker_id = s.id
 		LEFT JOIN events e ON t.event_id = e.id
@@ -75,6 +80,7 @@ func (m *TalkModel) GetLatest() ([]Talk, error) {
 			&talk.ID, &talk.Title, &talk.Duration, &talk.SpeakerID, &talk.EventID, &talk.Thumbnail, &talk.CreatedAt, &talk.UpdatedAt,
 			&talk.Speaker.ID, &talk.Speaker.Name, &talk.Speaker.CreatedAt, &talk.Speaker.UpdatedAt,
 			&talk.Event.ID, &talk.Event.Name, &talk.Event.DateStart, &talk.Event.DateEnd, &talk.Event.CreatedAt, &talk.Event.UpdatedAt,
+			&talk.VideoID, &talk.VideoProvider,
 		)
 		if err != nil {
 			return nil, err
@@ -84,6 +90,78 @@ func (m *TalkModel) GetLatest() ([]Talk, error) {
 
 	for _, talk := range talks {
 		fmt.Println(talk)
+	}
+
+	return talks, nil
+}
+
+func (m *TalkModel) Get(id int) (*Talk, error) {
+	query := `
+		SELECT 
+			t.id, t.title, t.duration, t.speaker_id, t.event_id, t.thumbnail, t.video_id, t.created_at, t.updated_at,
+			s.id, s.name, s.avatar, s.created_at, s.updated_at,
+			e.id, e.name, e.date_start, e.date_end, e.created_at, e.updated_at,
+			t.video_id, t.video_provider
+		FROM talks t
+		LEFT JOIN speakers s ON t.speaker_id = s.id
+		LEFT JOIN events e ON t.event_id = e.id
+		WHERE t.id = ?
+	`
+
+	var talk Talk
+	err := m.DB.QueryRow(query, id).Scan(
+		&talk.ID, &talk.Title, &talk.Duration, &talk.SpeakerID, &talk.EventID,
+		&talk.Thumbnail, &talk.VideoID, &talk.CreatedAt, &talk.UpdatedAt,
+		&talk.Speaker.ID, &talk.Speaker.Name, &talk.Speaker.Avatar,
+		&talk.Speaker.CreatedAt, &talk.Speaker.UpdatedAt,
+		&talk.Event.ID, &talk.Event.Name, &talk.Event.DateStart,
+		&talk.Event.DateEnd, &talk.Event.CreatedAt, &talk.Event.UpdatedAt,
+		&talk.VideoID, &talk.VideoProvider,
+	)
+
+	if err == sql.ErrNoRows {
+		return nil, ErrNoRecord
+	} else if err != nil {
+		return nil, err
+	}
+
+	return &talk, nil
+}
+
+func (m *TalkModel) GetRelatedTalks(eventID int, currentTalkID int) ([]Talk, error) {
+	query := `
+		SELECT 
+			t.id, t.title, t.duration, t.speaker_id, t.event_id, t.thumbnail, t.created_at, t.updated_at,
+			s.id, s.name, s.created_at, s.updated_at,
+			t.video_id, t.video_provider
+		FROM talks t
+		LEFT JOIN speakers s ON t.speaker_id = s.id
+		WHERE t.event_id = ? AND t.id != ?
+		ORDER BY t.created_at DESC
+		LIMIT 5
+	`
+
+	rows, err := m.DB.Query(query, eventID, currentTalkID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var talks []Talk
+
+	for rows.Next() {
+		var talk Talk
+		err := rows.Scan(
+			&talk.ID, &talk.Title, &talk.Duration, &talk.SpeakerID, &talk.EventID,
+			&talk.Thumbnail, &talk.CreatedAt, &talk.UpdatedAt,
+			&talk.Speaker.ID, &talk.Speaker.Name, &talk.Speaker.CreatedAt,
+			&talk.Speaker.UpdatedAt,
+			&talk.VideoID, &talk.VideoProvider,
+		)
+		if err != nil {
+			return nil, err
+		}
+		talks = append(talks, talk)
 	}
 
 	return talks, nil

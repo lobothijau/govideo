@@ -11,9 +11,11 @@ import (
 )
 
 type templateData struct {
-	Talks    []models.Talk
-	Speakers []models.Speaker
-	Events   []models.Event
+	Talk         *models.Talk
+	Talks        []models.Talk
+	RelatedTalks []models.Talk
+	Speakers     []models.Speaker
+	Events       []models.Event
 }
 
 // cache to hold our templates
