@@ -51,3 +51,10 @@ func AvatarURL(avatar string) string {
 	}
 	return "/static/images/speakers/" + avatar
 }
+
+func EventBannerURL(banner string) string {
+	if len(banner) >= 4 && banner[:4] == "http" {
+		return banner
+	}
+	return "/static/images/events/" + banner
+}

@@ -34,6 +34,34 @@ func (m *EventModel) Get(id int) (*Event, error) {
 }
 
 func (m *EventModel) Insert(event *Event) error {
+	query := `
+		INSERT INTO events (
+			name, location, date_start, date_end,
+			banner, thumbnail, home_page, description
+		)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+	`
+
+	result, err := m.DB.Exec(query,
+		event.Name,
+		event.Location,
+		event.DateStart,
+		event.DateEnd,
+		event.Banner,
+		event.Thumbnail,
+		event.HomePage,
+		event.Description,
+	)
+	if err != nil {
+		return err
+	}
+
+	id, err := result.LastInsertId()
+	if err != nil {
+		return err
+	}
+
+	event.ID = int(id)
 	return nil
 }
 

@@ -29,6 +29,7 @@ func (app *application) initTemplates() error {
 	functions := template.FuncMap{
 		"formatDateRange": view.FormatDateRange,
 		"avatarURL":       view.AvatarURL,
+		"eventBannerURL":  view.EventBannerURL,
 	}
 
 	// Get all page templates
