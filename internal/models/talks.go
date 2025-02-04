@@ -166,3 +166,52 @@ func (m *TalkModel) GetRelatedTalks(eventID int, currentTalkID int) ([]Talk, err
 
 	return talks, nil
 }
+
+func (m *TalkModel) GetPaginated(offset, limit int) ([]Talk, error) {
+	query := `
+		SELECT 
+			t.id, t.title, t.duration, t.speaker_id, t.event_id, t.thumbnail, 
+			t.video_id, t.video_provider, t.created_at, t.updated_at,
+			s.id, s.name, s.created_at, s.updated_at,
+			e.id, e.name, e.date_start, e.date_end, e.created_at, e.updated_at
+		FROM talks t
+		LEFT JOIN speakers s ON t.speaker_id = s.id
+		LEFT JOIN events e ON t.event_id = e.id
+		ORDER BY t.created_at DESC
+		LIMIT ? OFFSET ?
+	`
+
+	rows, err := m.DB.Query(query, limit, offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var talks []Talk
+
+	for rows.Next() {
+		var talk Talk
+		err := rows.Scan(
+			&talk.ID, &talk.Title, &talk.Duration, &talk.SpeakerID, &talk.EventID,
+			&talk.Thumbnail, &talk.VideoID, &talk.VideoProvider, &talk.CreatedAt, &talk.UpdatedAt,
+			&talk.Speaker.ID, &talk.Speaker.Name, &talk.Speaker.CreatedAt, &talk.Speaker.UpdatedAt,
+			&talk.Event.ID, &talk.Event.Name, &talk.Event.DateStart, &talk.Event.DateEnd,
+			&talk.Event.CreatedAt, &talk.Event.UpdatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+		talks = append(talks, talk)
+	}
+
+	return talks, nil
+}
+
+func (m *TalkModel) GetTotalCount() (int, error) {
+	var count int
+	err := m.DB.QueryRow("SELECT COUNT(*) FROM talks").Scan(&count)
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
+}

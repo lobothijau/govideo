@@ -16,6 +16,13 @@ type templateData struct {
 	RelatedTalks []models.Talk
 	Speakers     []models.Speaker
 	Events       []models.Event
+	CurrentPage  int
+	TotalPages   int
+	HasNext      bool
+	HasPrev      bool
+	NextPage     int
+	PrevPage     int
+	Pages        []int
 }
 
 // cache to hold our templates

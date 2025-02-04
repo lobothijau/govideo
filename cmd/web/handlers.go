@@ -44,10 +44,6 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	app.render(w, r, "home.html", data)
 }
 
-func (app *application) videoView(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Video View!"))
-}
-
 func (app *application) talkDetail(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Path[len("/talks/"):])
 	if err != nil || id < 1 {
@@ -79,10 +75,6 @@ func (app *application) talkDetail(w http.ResponseWriter, r *http.Request) {
 	}
 
 	app.render(w, r, "video_detail.html", data)
-}
-
-func (app *application) videoCreate(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Video Create!"))
 }
 
 func (app *application) speakerCreate(w http.ResponseWriter, r *http.Request) {
@@ -341,4 +333,66 @@ func (app *application) talkCreatePost(w http.ResponseWriter, r *http.Request) {
 	// Redirect to the talk page
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 	// http.Redirect(w, r, fmt.Sprintf("/talk/view/%d", id), http.StatusSeeOther)
+}
+
+func (app *application) talksView(w http.ResponseWriter, r *http.Request) {
+	page, err := strconv.Atoi(r.URL.Query().Get("page"))
+	if err != nil || page < 1 {
+		page = 1
+	}
+
+	perPage := 20
+	offset := (page - 1) * perPage
+
+	// Get talks for current page
+	talks, err := app.talks.GetPaginated(offset, perPage)
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	// Get total count of talks
+	totalTalks, err := app.talks.GetTotalCount()
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	totalPages := (totalTalks + perPage - 1) / perPage
+
+	// Generate pagination numbers (show 5 pages around current page)
+	var pages []int
+	start := max(1, page-2)
+	end := min(totalPages, page+2)
+
+	for i := start; i <= end; i++ {
+		pages = append(pages, i)
+	}
+
+	data := templateData{
+		Talks:       talks,
+		CurrentPage: page,
+		TotalPages:  totalPages,
+		HasNext:     page < totalPages,
+		HasPrev:     page > 1,
+		NextPage:    page + 1,
+		PrevPage:    page - 1,
+		Pages:       pages,
+	}
+
+	app.render(w, r, "talks.html", data)
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
 }

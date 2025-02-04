@@ -1,0 +1,98 @@
+{{define "title"}}All Talks{{end}} {{define "main"}}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  <h1 class="text-3xl font-bold mb-8">All Talks</h1>
+
+  <div
+    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+  >
+    {{range .Talks}}
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+      <div class="relative">
+        <a href="/talks/{{.ID}}">
+          <img
+            src="{{talkThumbnailURL .Thumbnail}}"
+            alt="{{.Title}} thumbnail"
+            class="w-full h-48 object-cover"
+          />
+          <span
+            class="absolute top-3 right-3 bg-white text-gray-900 px-3 py-1 rounded-full text-sm font-medium shadow-md"
+            >{{.Duration}}</span
+          >
+        </a>
+      </div>
+      <div class="p-4">
+        <a href="/talks/{{.ID}}" class="hover:text-cyan-800">
+          <h3 class="font-semibold text-lg mb-2">{{.Title}}</h3>
+        </a>
+        <div class="space-y-2 text-sm text-gray-600">
+          <div class="flex items-center gap-2">
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              />
+            </svg>
+            <span>{{.Speaker.Name}}</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
+            </svg>
+            <span>{{.Event.Name}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{end}}
+  </div>
+
+  <!-- Pagination -->
+  {{if gt .TotalPages 1}}
+  <div class="flex justify-center mt-8">
+    <nav class="flex items-center gap-1">
+      {{if .HasPrev}}
+      <a
+        href="/talks?page={{.PrevPage}}"
+        class="px-3 py-2 rounded-lg bg-white text-gray-500 hover:bg-gray-50"
+      >
+        &lt;
+      </a>
+      {{end}} {{range .Pages}} {{if eq . $.CurrentPage}}
+      <span class="px-2 py-1 text-cyan-600 outline outline-1 outline-cyan-600 rounded-lg"> {{.}} </span>
+      {{else}}
+      <a
+        href="/talks?page={{.}}"
+        class="px-3 py-2 rounded-lg bg-white text-gray-500 hover:bg-gray-50"
+      >
+        {{.}}
+      </a>
+      {{end}} {{end}} {{if .HasNext}}
+      <a
+        href="/talks?page={{.NextPage}}"
+        class="px-3 py-2 rounded-lg bg-white text-gray-500 hover:bg-gray-50"
+      >
+        &gt;
+      </a>
+      {{end}}
+    </nav>
+  </div>
+  {{end}}
+</div>
+{{end}}
