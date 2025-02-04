@@ -23,6 +23,32 @@ type TalkModel struct {
 	DB *sql.DB
 }
 
+func (m *TalkModel) Insert(talk *Talk) (int, error) {
+	query := `
+		INSERT INTO talks (
+			title, duration, speaker_id, event_id, thumbnail
+		)
+		VALUES (?, ?, ?, ?, ?)
+	`
+
+	result, err := m.DB.Exec(query,
+		talk.Title,
+		talk.Duration,
+		talk.SpeakerID,
+		talk.EventID,
+		talk.Thumbnail,
+	)
+	if err != nil {
+		return 0, err
+	}
+
+	id, err := result.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+	return int(id), nil
+}
+
 func (m *TalkModel) GetLatest() ([]Talk, error) {
 	query := `
 		SELECT 

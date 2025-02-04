@@ -1,9 +1,10 @@
 package main
 
-import "net/http"
+import (
+	"net/http"
+)
 
-func (app *application) routes() *http.ServeMux {
-
+func (app *application) routes() http.Handler {
 	mux := http.NewServeMux()
 
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
@@ -21,6 +22,9 @@ func (app *application) routes() *http.ServeMux {
 
 	mux.HandleFunc("GET /event/create", app.eventCreate)
 	mux.HandleFunc("POST /event/create", app.eventCreatePost)
+
+	mux.HandleFunc("GET /talk/create", app.talkCreate)
+	mux.HandleFunc("POST /talk/create", app.talkCreatePost)
 
 	return mux
 }

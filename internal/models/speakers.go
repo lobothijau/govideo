@@ -22,8 +22,38 @@ type SpeakerModel struct {
 	DB *sql.DB
 }
 
-func (m *SpeakerModel) GetAll() ([]*Speaker, error) {
-	return nil, nil
+func (m *SpeakerModel) GetAll() ([]Speaker, error) {
+	query := `
+		SELECT id, name, avatar, home_page, github, twitter, linkedin, created_at, updated_at
+		FROM speakers
+		ORDER BY name ASC
+	`
+
+	rows, err := m.DB.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var speakers []Speaker
+
+	for rows.Next() {
+		s := Speaker{}
+		err := rows.Scan(
+			&s.ID, &s.Name, &s.Avatar, &s.HomePage, &s.Github,
+			&s.Twitter, &s.Linkedin, &s.CreatedAt, &s.UpdatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+		speakers = append(speakers, s)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return speakers, nil
 }
 
 func (m *SpeakerModel) Get(id int) (*Speaker, error) {

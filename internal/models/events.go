@@ -24,8 +24,40 @@ type EventModel struct {
 	DB *sql.DB
 }
 
-func (m *EventModel) GetAll() ([]*Event, error) {
-	return nil, nil
+func (m *EventModel) GetAll() ([]Event, error) {
+	query := `
+		SELECT id, name, location, date_start, date_end, banner, thumbnail, 
+			   home_page, description, created_at, updated_at
+		FROM events
+		ORDER BY date_start DESC
+	`
+
+	rows, err := m.DB.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var events []Event
+
+	for rows.Next() {
+		e := Event{}
+		err := rows.Scan(
+			&e.ID, &e.Name, &e.Location, &e.DateStart, &e.DateEnd,
+			&e.Banner, &e.Thumbnail, &e.HomePage, &e.Description,
+			&e.CreatedAt, &e.UpdatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+		events = append(events, e)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return events, nil
 }
 
 func (m *EventModel) Get(id int) (*Event, error) {

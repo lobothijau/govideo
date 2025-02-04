@@ -1,0 +1,108 @@
+{{define "title"}}Add New Talk{{end}}
+{{define "main"}}
+<div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  <h1 class="text-3xl font-bold mb-6">Add New Talk</h1>
+
+  <form
+    action="/talk/create"
+    method="POST"
+    enctype="multipart/form-data"
+    class="space-y-6"
+  >
+    <div>
+      <label for="title" class="block text-sm font-medium text-gray-700"
+        >Talk Title</label
+      >
+      <input
+        type="text"
+        name="title"
+        id="title"
+        required
+        class="mt-1 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-cyan-600 sm:text-sm/6"
+      />
+    </div>
+
+    <div>
+      <label for="duration" class="block text-sm font-medium text-gray-700"
+        >Duration (e.g., "02:11:12")</label
+      >
+      <input
+        type="text"
+        name="duration"
+        id="duration"
+        required
+        class="mt-1 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-cyan-600 sm:text-sm/6"
+      />
+    </div>
+
+    <div>
+      <label for="speaker_id" class="block text-sm font-medium text-gray-700"
+        >Speaker</label
+      >
+      <select
+        name="speaker_id"
+        id="speaker_id"
+        required
+        class="select2 mt-1 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-cyan-600 sm:text-sm/6"
+      >
+        <option value="">Select a speaker</option>
+        {{range .Speakers}}
+        <option value="{{.ID}}">{{.Name}}</option>
+        {{end}}
+      </select>
+    </div>
+
+    <div>
+      <label for="event_id" class="block text-sm font-medium text-gray-700"
+        >Event</label
+      >
+      <select
+        name="event_id"
+        id="event_id"
+        required
+        class="select2 mt-1 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-cyan-600 sm:text-sm/6"
+      >
+        <option value="">Select an event</option>
+        {{range .Events}}
+        <option value="{{.ID}}">{{.Name}} ({{.DateStart}})</option>
+        {{end}}
+      </select>
+    </div>
+
+    <div>
+      <label for="thumbnail" class="block text-sm font-medium text-gray-700"
+        >Talk Thumbnail Image</label
+      >
+      <input
+        type="file"
+        name="thumbnail"
+        id="thumbnail"
+        accept="image/*"
+        required
+        class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-cyan-50 file:text-cyan-700 hover:file:bg-cyan-100"
+      />
+    </div>
+
+    <div class="flex justify-end">
+      <button
+        type="submit"
+        class="bg-cyan-600 text-white px-4 py-2 rounded-md hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
+      >
+        Add Talk
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+$(document).ready(function() {
+  // Initialize Select2 on both dropdowns
+  $('.select2').select2({
+    width: '100%',
+    theme: 'classic',
+    placeholder: 'Search...',
+    allowClear: true
+  });
+});
+</script>
+{{end}}

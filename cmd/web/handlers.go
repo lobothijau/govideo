@@ -227,3 +227,94 @@ func (app *application) eventCreatePost(w http.ResponseWriter, r *http.Request) 
 	// Redirect to the home page (or event detail page once implemented)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
+
+func (app *application) talkCreate(w http.ResponseWriter, r *http.Request) {
+	// Get speakers for the dropdown
+	speakers, err := app.speakers.GetAll()
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	// Get events for the dropdown
+	events, err := app.events.GetAll()
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	data := templateData{}
+	data.Speakers = speakers
+	data.Events = events
+
+	app.render(w, r, "talk_create.html", data)
+}
+
+func (app *application) talkCreatePost(w http.ResponseWriter, r *http.Request) {
+	// Maximum file size of 10MB
+	err := r.ParseMultipartForm(10 << 20)
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	// Get form values
+	title := r.PostForm.Get("title")
+	duration := r.PostForm.Get("duration")
+	speakerID, err := strconv.Atoi(r.PostForm.Get("speaker_id"))
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+	eventID, err := strconv.Atoi(r.PostForm.Get("event_id"))
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	// Handle thumbnail upload
+	file, fileHeader, err := r.FormFile("thumbnail")
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+	defer file.Close()
+
+	// Generate unique filename
+	filename := fmt.Sprintf("%d_%s", time.Now().UnixNano(), fileHeader.Filename)
+
+	// Create the file
+	dst, err := os.Create(filepath.Join("ui", "static", "images", "talks", filename))
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+	defer dst.Close()
+
+	// Copy the uploaded file to the destination
+	_, err = io.Copy(dst, file)
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	// Create talk model
+	talk := &models.Talk{
+		Title:     title,
+		Duration:  duration,
+		SpeakerID: speakerID,
+		EventID:   eventID,
+		Thumbnail: filename,
+	}
+
+	// Insert the talk
+	_, err = app.talks.Insert(talk)
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	// Redirect to the talk page
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+	// http.Redirect(w, r, fmt.Sprintf("/talk/view/%d", id), http.StatusSeeOther)
+}
