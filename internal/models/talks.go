@@ -258,7 +258,7 @@ func (m *TalkModel) GetByEvent(eventID int) ([]Talk, error) {
 		SELECT 
 			t.id, t.title, t.duration, t.thumbnail,
 			t.speaker_id, t.event_id, t.created_at, t.updated_at,
-			s.name as speaker_name, s.avatar as speaker_avatar
+			s.id, s.name, s.avatar
 		FROM talks t
 		JOIN speakers s ON t.speaker_id = s.id
 		WHERE t.event_id = ?
@@ -279,7 +279,7 @@ func (m *TalkModel) GetByEvent(eventID int) ([]Talk, error) {
 		err := rows.Scan(
 			&talk.ID, &talk.Title, &talk.Duration, &talk.Thumbnail,
 			&talk.SpeakerID, &talk.EventID, &talk.CreatedAt, &talk.UpdatedAt,
-			&speaker.Name, &speaker.Avatar,
+			&speaker.ID, &speaker.Name, &speaker.Avatar,
 		)
 		if err != nil {
 			return nil, err

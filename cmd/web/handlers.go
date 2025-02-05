@@ -494,7 +494,6 @@ func (app *application) eventDetail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Get the event details
 	event, err := app.events.Get(id)
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
@@ -505,7 +504,6 @@ func (app *application) eventDetail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Get all talks for this event
 	talks, err := app.talks.GetByEvent(event.ID)
 	if err != nil {
 		app.serverError(w, r, err)
