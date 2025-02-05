@@ -148,3 +148,53 @@ func (m *EventModel) GetLatest() ([]Event, error) {
 
 	return events, nil
 }
+
+func (m *EventModel) GetPaginated(offset, limit int) ([]Event, error) {
+	query := `
+		SELECT 
+			e.id, e.name, e.location, e.date_start, e.date_end, 
+			e.banner, e.thumbnail, e.home_page, e.description, 
+			e.created_at, e.updated_at,
+			COUNT(t.id) as talk_count
+		FROM events e
+		LEFT JOIN talks t ON e.id = t.event_id
+		GROUP BY e.id, e.name, e.location, e.date_start, e.date_end,
+				 e.banner, e.thumbnail, e.home_page, e.description,
+				 e.created_at, e.updated_at
+		ORDER BY e.date_start DESC
+		LIMIT ? OFFSET ?
+	`
+
+	rows, err := m.DB.Query(query, limit, offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var events []Event
+
+	for rows.Next() {
+		var event Event
+		err := rows.Scan(
+			&event.ID, &event.Name, &event.Location,
+			&event.DateStart, &event.DateEnd, &event.Banner,
+			&event.Thumbnail, &event.HomePage, &event.Description,
+			&event.CreatedAt, &event.UpdatedAt, &event.TalkCount,
+		)
+		if err != nil {
+			return nil, err
+		}
+		events = append(events, event)
+	}
+
+	return events, nil
+}
+
+func (m *EventModel) GetTotalCount() (int, error) {
+	var count int
+	err := m.DB.QueryRow("SELECT COUNT(*) FROM events").Scan(&count)
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
+}

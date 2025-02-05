@@ -16,8 +16,9 @@ func (app *application) routes() http.Handler {
 	mux.HandleFunc("GET /speaker/create", app.speakerCreate)
 	mux.HandleFunc("POST /speaker/create", app.speakerCreatePost)
 
-	mux.HandleFunc("GET /event/create", app.eventCreate)
-	mux.HandleFunc("POST /event/create", app.eventCreatePost)
+	mux.HandleFunc("GET /events", app.eventsView)
+	mux.HandleFunc("GET /events/create", app.eventCreate)
+	mux.HandleFunc("POST /events/create", app.eventCreatePost)
 
 	mux.HandleFunc("GET /talks/create", app.talkCreate)
 	mux.HandleFunc("POST /talks/create", app.talkCreatePost)

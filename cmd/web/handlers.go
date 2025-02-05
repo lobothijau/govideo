@@ -441,3 +441,48 @@ func (app *application) speakersView(w http.ResponseWriter, r *http.Request) {
 
 	app.render(w, r, "speakers.html", data)
 }
+
+func (app *application) eventsView(w http.ResponseWriter, r *http.Request) {
+	page, err := strconv.Atoi(r.URL.Query().Get("page"))
+	if err != nil || page < 1 {
+		page = 1
+	}
+
+	perPage := 20
+	offset := (page - 1) * perPage
+
+	events, err := app.events.GetPaginated(offset, perPage)
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	totalEvents, err := app.events.GetTotalCount()
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	totalPages := (totalEvents + perPage - 1) / perPage
+
+	var pages []int
+	start := max(1, page-2)
+	end := min(totalPages, page+2)
+
+	for i := start; i <= end; i++ {
+		pages = append(pages, i)
+	}
+
+	data := templateData{
+		Events:      events,
+		CurrentPage: page,
+		TotalPages:  totalPages,
+		HasNext:     page < totalPages,
+		HasPrev:     page > 1,
+		NextPage:    page + 1,
+		PrevPage:    page - 1,
+		Pages:       pages,
+	}
+
+	app.render(w, r, "events.html", data)
+}
