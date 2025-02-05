@@ -11,6 +11,7 @@ import (
 )
 
 type templateData struct {
+	Event        *models.Event
 	Talk         *models.Talk
 	Speaker      *models.Speaker
 	Talks        []models.Talk
@@ -37,10 +38,11 @@ func init() {
 func (app *application) initTemplates() error {
 	// Define our template functions
 	functions := template.FuncMap{
-		"formatDateRange":  view.FormatDateRange,
-		"avatarURL":        view.AvatarURL,
-		"eventBannerURL":   view.EventBannerURL,
-		"talkThumbnailURL": view.TalkThumbnailURL,
+		"formatDateRange":   view.FormatDateRange,
+		"avatarURL":         view.AvatarURL,
+		"eventBannerURL":    view.EventBannerURL,
+		"eventThumbnailURL": view.EventThumbnailURL,
+		"talkThumbnailURL":  view.TalkThumbnailURL,
 	}
 
 	// Get all page templates

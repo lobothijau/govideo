@@ -17,6 +17,7 @@ func (app *application) routes() http.Handler {
 	mux.HandleFunc("POST /speaker/create", app.speakerCreatePost)
 
 	mux.HandleFunc("GET /events", app.eventsView)
+	mux.HandleFunc("GET /events/{id}", app.eventDetail)
 	mux.HandleFunc("GET /events/create", app.eventCreate)
 	mux.HandleFunc("POST /events/create", app.eventCreatePost)
 

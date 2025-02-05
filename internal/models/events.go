@@ -61,8 +61,35 @@ func (m *EventModel) GetAll() ([]Event, error) {
 }
 
 func (m *EventModel) Get(id int) (*Event, error) {
-	return nil, nil
+	query := `
+		SELECT 
+			e.id, e.name, e.location, e.date_start, e.date_end, 
+			e.banner, e.thumbnail, e.home_page, e.description, 
+			e.created_at, e.updated_at,
+			COUNT(t.id) as talk_count
+		FROM events e
+		LEFT JOIN talks t ON e.id = t.event_id
+		WHERE e.id = ?
+		GROUP BY e.id, e.name, e.location, e.date_start, e.date_end,
+				 e.banner, e.thumbnail, e.home_page, e.description,
+				 e.created_at, e.updated_at
+	`
 
+	var event Event
+	err := m.DB.QueryRow(query, id).Scan(
+		&event.ID, &event.Name, &event.Location,
+		&event.DateStart, &event.DateEnd, &event.Banner,
+		&event.Thumbnail, &event.HomePage, &event.Description,
+		&event.CreatedAt, &event.UpdatedAt, &event.TalkCount,
+	)
+
+	if err == sql.ErrNoRows {
+		return nil, ErrNoRecord
+	} else if err != nil {
+		return nil, err
+	}
+
+	return &event, nil
 }
 
 func (m *EventModel) Insert(event *Event) error {

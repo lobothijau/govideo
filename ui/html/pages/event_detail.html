@@ -1,0 +1,76 @@
+{{define "title"}}{{.Event.Name}}{{end}}
+
+{{define "main"}}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="relative mb-8">
+        <img 
+            src="{{eventBannerURL .Event.Banner}}" 
+            alt="{{.Event.Name}} banner"
+            class="w-full h-96 object-cover rounded-xl"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-xl"></div>
+        <div class="absolute bottom-0 left-0 p-6 text-white">
+            <h1 class="text-4xl font-bold mb-2">{{.Event.Name}}</h1>
+            <div class="flex items-center gap-6 text-sm">
+                <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <span>{{.Event.Location}}</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    <span>{{formatDateRange .Event.DateStart .Event.DateEnd}}</span>
+                </div>
+                {{if .Event.HomePage}}
+                <a href="{{.Event.HomePage}}" target="_blank" class="flex items-center gap-2 hover:text-cyan-300">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                    </svg>
+                    <span>Visit Website</span>
+                </a>
+                {{end}}
+            </div>
+        </div>
+    </div>
+
+
+    <div class="space-y-6">
+        <h2 class="text-2xl font-bold">Talks ({{.Event.TalkCount}})</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {{range .Talks}}
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="relative">
+                    <a href="/talks/{{.ID}}">
+                        <img 
+                            src="{{talkThumbnailURL .Thumbnail}}" 
+                            alt="{{.Title}} thumbnail"
+                            class="w-full h-48 object-cover"
+                        />
+                        <span class="absolute top-3 right-3 bg-white text-gray-900 px-3 py-1 rounded-full text-sm font-medium shadow-md">
+                            {{.Duration}}
+                        </span>
+                    </a>
+                </div>
+                <div class="p-4">
+                    <a href="/talks/{{.ID}}" class="hover:text-cyan-800">
+                        <h3 class="font-semibold text-lg mb-2">{{.Title}}</h3>
+                    </a>
+                    <div class="flex items-center gap-2 text-sm text-gray-600">
+                        <img 
+                            src="{{avatarURL .Speaker.Avatar}}" 
+                            alt="{{.Speaker.Name}}"
+                            class="w-6 h-6 rounded-full"
+                        />
+                        <span>{{.Speaker.Name}}</span>
+                    </div>
+                </div>
+            </div>
+            {{end}}
+        </div>
+    </div>
+</div>
+{{end}} 

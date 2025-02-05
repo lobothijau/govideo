@@ -486,3 +486,36 @@ func (app *application) eventsView(w http.ResponseWriter, r *http.Request) {
 
 	app.render(w, r, "events.html", data)
 }
+
+func (app *application) eventDetail(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.URL.Path[len("/events/"):])
+	if err != nil || id < 1 {
+		app.clientError(w, http.StatusNotFound)
+		return
+	}
+
+	// Get the event details
+	event, err := app.events.Get(id)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.clientError(w, http.StatusNotFound)
+		} else {
+			app.serverError(w, r, err)
+		}
+		return
+	}
+
+	// Get all talks for this event
+	talks, err := app.talks.GetByEvent(event.ID)
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	data := templateData{
+		Event: event,
+		Talks: talks,
+	}
+
+	app.render(w, r, "event_detail.html", data)
+}

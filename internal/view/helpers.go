@@ -59,6 +59,13 @@ func EventBannerURL(banner string) string {
 	return "/static/images/events/" + banner
 }
 
+func EventThumbnailURL(thumbnail string) string {
+	if len(thumbnail) >= 4 && thumbnail[:4] == "http" {
+		return thumbnail
+	}
+	return "/static/images/events/" + thumbnail
+}
+
 func TalkThumbnailURL(thumbnail string) string {
 	if len(thumbnail) >= 4 && thumbnail[:4] == "http" {
 		return thumbnail

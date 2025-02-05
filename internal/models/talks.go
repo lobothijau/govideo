@@ -252,3 +252,41 @@ func (m *TalkModel) GetBySpeaker(speakerID int) ([]Talk, error) {
 
 	return talks, nil
 }
+
+func (m *TalkModel) GetByEvent(eventID int) ([]Talk, error) {
+	query := `
+		SELECT 
+			t.id, t.title, t.duration, t.thumbnail,
+			t.speaker_id, t.event_id, t.created_at, t.updated_at,
+			s.name as speaker_name, s.avatar as speaker_avatar
+		FROM talks t
+		JOIN speakers s ON t.speaker_id = s.id
+		WHERE t.event_id = ?
+		ORDER BY t.created_at ASC
+	`
+
+	rows, err := m.DB.Query(query, eventID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var talks []Talk
+
+	for rows.Next() {
+		var talk Talk
+		var speaker Speaker
+		err := rows.Scan(
+			&talk.ID, &talk.Title, &talk.Duration, &talk.Thumbnail,
+			&talk.SpeakerID, &talk.EventID, &talk.CreatedAt, &talk.UpdatedAt,
+			&speaker.Name, &speaker.Avatar,
+		)
+		if err != nil {
+			return nil, err
+		}
+		talk.Speaker = speaker
+		talks = append(talks, talk)
+	}
+
+	return talks, nil
+}

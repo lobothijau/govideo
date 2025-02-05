@@ -1,7 +1,7 @@
 {{define "title"}}{{.Speaker.Name}}{{end}} {{define "main"}}
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
   <!-- Speaker Profile Header -->
-  <div class="flex flex-col md:flex-row gap-8 mb-12">
+  <div class="flex flex-col md:flex-row gap-8 mb-10 border-b border-gray-200 pb-8">
     <div class="flex-shrink-0">
       <img
         src="{{avatarURL .Speaker.Avatar}}"
@@ -19,7 +19,7 @@
         href="{{.Speaker.HomePage}}"
         target="_blank"
         rel="noopener noreferrer"
-        class="text-gray-800 hover:text-cyan-800"
+        class="text-gray-600 hover:text-cyan-800"
       >
         {{.Speaker.HomePage}}
       </a>
@@ -73,6 +73,7 @@
       </div>
     </div>
   </div>
+
 
   <!-- Speaker's Talks -->
   <h2 class="text-2xl font-bold mb-6">All Talks</h2>
