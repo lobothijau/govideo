@@ -427,3 +427,17 @@ func (app *application) speakerDetail(w http.ResponseWriter, r *http.Request) {
 
 	app.render(w, r, "speaker_detail.html", data)
 }
+
+func (app *application) speakersView(w http.ResponseWriter, r *http.Request) {
+	speakers, err := app.speakers.GetAll()
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	data := templateData{
+		Speakers: speakers,
+	}
+
+	app.render(w, r, "speakers.html", data)
+}

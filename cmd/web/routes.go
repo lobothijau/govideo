@@ -25,6 +25,7 @@ func (app *application) routes() http.Handler {
 	mux.HandleFunc("GET /talks", app.talksView)
 
 	mux.HandleFunc("GET /speakers/{id}", app.speakerDetail)
+	mux.HandleFunc("GET /speakers", app.speakersView)
 
 	return mux
 }

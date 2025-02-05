@@ -24,9 +24,13 @@ type SpeakerModel struct {
 
 func (m *SpeakerModel) GetAll() ([]Speaker, error) {
 	query := `
-		SELECT id, name, avatar, home_page, github, twitter, linkedin, created_at, updated_at
-		FROM speakers
-		ORDER BY name ASC
+		SELECT 
+			s.id, s.name, s.avatar, s.home_page, s.github, s.twitter, s.linkedin, s.created_at, s.updated_at,
+			COUNT(t.id) as talk_count
+		FROM speakers s
+		LEFT JOIN talks t ON s.id = t.speaker_id
+		GROUP BY s.id, s.name, s.avatar, s.home_page, s.github, s.twitter, s.linkedin, s.created_at, s.updated_at
+		ORDER BY s.name ASC
 	`
 
 	rows, err := m.DB.Query(query)
@@ -41,7 +45,7 @@ func (m *SpeakerModel) GetAll() ([]Speaker, error) {
 		s := Speaker{}
 		err := rows.Scan(
 			&s.ID, &s.Name, &s.Avatar, &s.HomePage, &s.Github,
-			&s.Twitter, &s.Linkedin, &s.CreatedAt, &s.UpdatedAt,
+			&s.Twitter, &s.Linkedin, &s.CreatedAt, &s.UpdatedAt, &s.TalkCount,
 		)
 		if err != nil {
 			return nil, err
