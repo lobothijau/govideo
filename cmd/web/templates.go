@@ -12,6 +12,7 @@ import (
 
 type templateData struct {
 	Talk         *models.Talk
+	Speaker      *models.Speaker
 	Talks        []models.Talk
 	RelatedTalks []models.Talk
 	Speakers     []models.Speaker

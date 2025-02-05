@@ -215,3 +215,40 @@ func (m *TalkModel) GetTotalCount() (int, error) {
 	}
 	return count, nil
 }
+
+func (m *TalkModel) GetBySpeaker(speakerID int) ([]Talk, error) {
+	query := `
+		SELECT 
+			t.id, t.title, t.duration, t.speaker_id, t.event_id, t.thumbnail,
+			t.video_id, t.video_provider, t.created_at, t.updated_at,
+			e.id, e.name, e.date_start, e.date_end, e.created_at, e.updated_at
+		FROM talks t
+		LEFT JOIN events e ON t.event_id = e.id
+		WHERE t.speaker_id = ?
+		ORDER BY t.created_at DESC
+	`
+
+	rows, err := m.DB.Query(query, speakerID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var talks []Talk
+
+	for rows.Next() {
+		var talk Talk
+		err := rows.Scan(
+			&talk.ID, &talk.Title, &talk.Duration, &talk.SpeakerID, &talk.EventID,
+			&talk.Thumbnail, &talk.VideoID, &talk.VideoProvider, &talk.CreatedAt, &talk.UpdatedAt,
+			&talk.Event.ID, &talk.Event.Name, &talk.Event.DateStart, &talk.Event.DateEnd,
+			&talk.Event.CreatedAt, &talk.Event.UpdatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+		talks = append(talks, talk)
+	}
+
+	return talks, nil
+}

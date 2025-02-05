@@ -396,3 +396,34 @@ func min(a, b int) int {
 	}
 	return b
 }
+
+func (app *application) speakerDetail(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.URL.Path[len("/speakers/"):])
+	if err != nil || id < 1 {
+		app.clientError(w, http.StatusNotFound)
+		return
+	}
+
+	speaker, err := app.speakers.Get(id)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.clientError(w, http.StatusNotFound)
+		} else {
+			app.serverError(w, r, err)
+		}
+		return
+	}
+
+	talks, err := app.talks.GetBySpeaker(speaker.ID)
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	data := templateData{
+		Speaker: speaker,
+		Talks:   talks,
+	}
+
+	app.render(w, r, "speaker_detail.html", data)
+}

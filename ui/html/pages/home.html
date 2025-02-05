@@ -102,13 +102,17 @@
   <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-12">
     {{range .Speakers}}
     <div class="bg-white rounded-lg shadow-md overflow-hidden">
-      <img
-        src="{{avatarURL .Avatar}}"
-        alt="{{.Name}}'s avatar"
-        class="w-full h-40 object-cover"
-      />
+      <a href="/speakers/{{.ID}}">
+        <img
+          src="{{avatarURL .Avatar}}"
+          alt="{{.Name}}'s avatar"
+          class="w-full h-40 object-cover"
+        />
+      </a>
       <div class="p-4">
-        <h3 class="font-semibold text-lg">{{.Name}}</h3>
+        <a href="/speakers/{{.ID}}" class="hover:text-cyan-800">
+          <h3 class="font-semibold text-lg">{{.Name}}</h3>
+        </a>
         <span class="text-sm text-gray-600">{{.TalkCount}} talks</span>
       </div>
     </div>

@@ -57,7 +57,20 @@ func (m *SpeakerModel) GetAll() ([]Speaker, error) {
 }
 
 func (m *SpeakerModel) Get(id int) (*Speaker, error) {
-	return nil, nil
+	query := `
+		SELECT id, name, avatar, home_page, github, twitter, linkedin, created_at, updated_at
+		FROM speakers
+		WHERE id = ?
+	`
+
+	row := m.DB.QueryRow(query, id)
+
+	var speaker Speaker
+	err := row.Scan(&speaker.ID, &speaker.Name, &speaker.Avatar, &speaker.HomePage, &speaker.Github, &speaker.Twitter, &speaker.Linkedin, &speaker.CreatedAt, &speaker.UpdatedAt)
+	if err != nil {
+		return nil, err
+	}
+	return &speaker, nil
 }
 
 func (m *SpeakerModel) Insert(speaker *Speaker) (int, error) {
