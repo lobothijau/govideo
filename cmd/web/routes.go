@@ -12,6 +12,7 @@ func (app *application) routes() http.Handler {
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
 	mux.HandleFunc("GET /{$}", app.home)
+	mux.HandleFunc("GET /uses", app.usesView)
 
 	mux.HandleFunc("GET /speaker/create", app.speakerCreate)
 	mux.HandleFunc("POST /speaker/create", app.speakerCreatePost)

@@ -44,6 +44,11 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	app.render(w, r, "home.html", data)
 }
 
+func (app *application) usesView(w http.ResponseWriter, r *http.Request) {
+	data := templateData{}
+	app.render(w, r, "uses.html", data)
+}
+
 func (app *application) talkDetail(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Path[len("/talks/"):])
 	if err != nil || id < 1 {
